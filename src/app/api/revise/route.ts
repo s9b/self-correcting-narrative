@@ -1,5 +1,6 @@
+
 import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenerativeAI } from '@google/genai';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
 
@@ -11,14 +12,8 @@ export async function POST(request: Request) {
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-    const generationPrompt = `You are The Storyteller (Senior). Given the ORIGINAL_DRAFT, CRITIQUE_A, and CRITIQUE_B, rewrite the story into 200–300 words that incorporate both critiques. Make the voice warm and slightly whimsical. Output only the new story.
-
-ORIGINAL_DRAFT: "${text}"
-
-CRITIQUE_A: "${critA}"
-
-CRITIQUE_B: "${critB}"`;
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const generationPrompt = `You are The Storyteller (Senior). Given the ORIGINAL_DRAFT, CRITIQUE_A, and CRITIQUE_B, rewrite the story into 200–300 words that incorporate both critiques. Make the voice warm and slightly whimsical. Output only the new story.\n\nORIGINAL_DRAFT: "${text}"\n\nCRITIQUE_A: "${critA}"\n\nCRITIQUE_B: "${critB}"`;
     
     const result = await model.generateContent(generationPrompt);
     const response = await result.response;
