@@ -13,7 +13,7 @@ export async function POST(request: Request) {
 
   try {
     // @ts-expect-error: Vercel type resolution issue
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
     const generationPrompt = `You are The Storyteller (Senior). Given the ORIGINAL_DRAFT, CRITIQUE_A, and CRITIQUE_B, rewrite the story into 200–300 words that incorporate both critiques. Make the voice warm and slightly whimsical. Output only the new story.\n\nORIGINAL_DRAFT: "${text}"\n\nCRITIQUE_A: "${critA}"\n\nCRITIQUE_B: "${critB}"`;
     
     const result = await model.generateContent(generationPrompt);
