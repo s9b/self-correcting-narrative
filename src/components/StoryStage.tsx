@@ -4,7 +4,15 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Typewriter from 'typewriter-effect';
 
-const AgentCard = ({ title, content, color, stage, currentStage }) => {
+interface AgentCardProps {
+  title: string;
+  content: string;
+  color: string;
+  stage: string;
+  currentStage: string;
+}
+
+const AgentCard = ({ title, content, color, stage, currentStage }: AgentCardProps) => {
   const isActive = stage === currentStage;
   return (
     <motion.div
