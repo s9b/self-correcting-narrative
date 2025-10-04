@@ -1,8 +1,6 @@
 
 import { NextResponse } from 'next/server';
-import { GoogleGenAI } from '@google/genai';
-
-const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+import { GoogleGenAI, GenerativeModel } from '@google/genai';
 
 export async function POST(request: Request) {
   const { revisedStory } = await request.json();
@@ -12,7 +10,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const model = (genAI as any).getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = new GenerativeModel({ apiKey: process.env.GEMINI_API_KEY!, model: 'gemini-1.5-flash' });
     const generationPrompt = `Read the following story and produce a short image prompt for an illustration (1–2 sentences). Keep the prompt explicit about style: "children's book illustration, watercolor, warm tones".\n\nSTORY: "${revisedStory}"`;
     
     const result = await model.generateContent(generationPrompt);

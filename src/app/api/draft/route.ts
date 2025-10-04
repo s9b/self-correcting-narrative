@@ -1,8 +1,6 @@
 
 import { NextResponse } from 'next/server';
-import { GoogleGenAI } from '@google/genai';
-
-const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+import { GoogleGenAI, GenerativeModel } from '@google/genai';
 
 export async function POST(request: Request) {
   const { prompt } = await request.json();
@@ -12,7 +10,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const model = (genAI as any).getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = new GenerativeModel({ apiKey: process.env.GEMINI_API_KEY!, model: 'gemini-1.5-flash' });
     const generationPrompt = `You are The Storyteller. Given this prompt: "${prompt}", produce a bland short draft of ~120 words for a kid-friendly story. Keep it simple and intentionally unpolished. Output only the story text.`;
     const result = await model.generateContent(generationPrompt);
     const response = await result.response;
