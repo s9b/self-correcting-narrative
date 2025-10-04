@@ -1,5 +1,7 @@
-
 import { NextResponse } from 'next/server';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
 
 export async function POST(request: Request) {
   const { prompt } = await request.json();
@@ -8,8 +10,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Prompt is required' }, { status: 400 });
   }
 
-  // TODO: Call Gemini API to generate a bland draft
-  const text = `The squirrel was named Sam. He was scared. He went to school.`;
+  try {
+    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    const generationPrompt = `You are The Storyteller. Given this prompt: "${prompt}", produce a bland short draft of ~120 words for a kid-friendly story. Keep it simple and intentionally unpolished. Output only the story text.`;
+    const result = await model.generateContent(generationPrompt);
+    const response = await result.response;
+    const text = await response.text();
 
-  return NextResponse.json({ success: true, text });
+    return NextResponse.json({ success: true, text });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: 'Failed to generate draft' }, { status: 500 });
+  }
 }
