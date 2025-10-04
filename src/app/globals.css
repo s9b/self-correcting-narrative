@@ -1,26 +1,63 @@
-@import "tailwindcss";
-
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+  --background-start-rgb: 10, 10, 10;
+  --background-end-rgb: 26, 26, 26;
   --card-background: #1a1a1a;
   --border-color: #2a2a2a;
   --accent-blue: #0070f3;
   --accent-green: #00a86b;
   --accent-yellow: #f5a623;
   --accent-indigo: #6366f1;
-}
-
-@theme {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: 'Inter', sans-serif;
-  --font-mono: var(--font-geist-mono);
+  --font-inter: '__Inter_Fallback_0ec1f6', '__Inter_Fallback_Fallback_0ec1f6';
+  --font-playfair: '__Playfair_Display_Fallback_1a7b99', '__Playfair_Display_Fallback_Fallback_1a7b99';
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  
+  color: rgb(222, 222, 222);
+  background: radial-gradient(circle at top, rgb(var(--background-end-rgb)), rgb(var(--background-start-rgb)));
+  background-attachment: fixed;
+  font-family: var(--font-inter);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-playfair);
+}
+
+/* Add a subtle glow to the active agent card */
+.ring-2.ring-\[var\(--accent-indigo\)\] {
+  box-shadow: 0 0 15px 0 rgba(99, 102, 241, 0.5);
+}
+
+/* Polish the main button */
+.bg-\[var\(--accent-indigo\)\] {
+  background-image: linear-gradient(to right, #6366f1, #818cf8);
+  transition: all 0.3s ease;
+}
+
+.bg-\[var\(--accent-indigo\)\]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -10px rgba(99, 102, 241, 0.6);
+}
+
+/* Style the prose */
+.prose-invert {
+    --tw-prose-body: #d1d5db;
+    --tw-prose-headings: #ffffff;
+    --tw-prose-lead: #e5e7eb;
+    --tw-prose-links: #818cf8;
+    --tw-prose-bold: #ffffff;
+    --tw-prose-counters: #9ca3af;
+    --tw-prose-bullets: #4f46e5;
+    --tw-prose-hr: #374151;
+    --tw-prose-quotes: #d1d5db;
+    --tw-prose-quote-borders: #4f46e5;
+    --tw-prose-captions: #9ca3af;
+    --tw-prose-code: #ffffff;
+    --tw-prose-pre-code: #d1d5db;
+    --tw-prose-pre-bg: #111827;
+    --tw-prose-th-borders: #374151;
+    --tw-prose-td-borders: #374151;
 }
