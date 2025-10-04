@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenAI, GenerationConfig } from '@google/genai';
 
-const genAI = new GoogleGenAI(process.env.GEMINI_API_KEY as string);
+const genAI = new GoogleGenAI();
 
 const generationConfig: GenerationConfig = {
   responseMimeType: "application/json",

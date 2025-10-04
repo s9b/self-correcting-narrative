@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 
-const genAI = new GoogleGenAI(process.env.GEMINI_API_KEY as string);
+const genAI = new GoogleGenAI();
 
 export async function POST(request: Request) {
   const { prompt } = await request.json();
