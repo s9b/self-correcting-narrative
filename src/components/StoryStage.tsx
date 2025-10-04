@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Typewriter from 'typewriter-effect';
 
 export default function StoryStage() {
@@ -11,9 +11,7 @@ export default function StoryStage() {
   const [critB, setCritB] = useState('');
   const [finalStory, setFinalStory] = useState('');
   const [imageUrl, setImageUrl] = useState('');
-  const [isNarrationLoading, setIsNarrationLoading] = useState(false);
-  const [audioUrl, setAudioUrl] = useState('');
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const [isNarrating, setIsNarrating] = useState(false);
 
   async function runPipeline() {
     setStage('drafting');
@@ -22,7 +20,8 @@ export default function StoryStage() {
     setCritB('');
     setFinalStory('');
     setImageUrl('');
-    setAudioUrl('');
+    window.speechSynthesis.cancel();
+    setIsNarrating(false);
 
     try {
       const res1 = await fetch('/api/draft', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }) });
@@ -55,30 +54,27 @@ export default function StoryStage() {
     }
   }
 
-  const handlePlayNarration = async () => {
-    if (!finalStory) return;
-    setIsNarrationLoading(true);
+  const handlePlayNarration = () => {
+    if (!finalStory || typeof window === 'undefined') return;
 
-    try {
-      const response = await fetch('/api/tts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ revisedStory: finalStory }),
-      });
-
-      if (!response.ok) throw new Error('Failed to generate narration');
-      const data = await response.json();
-      setAudioUrl(data.audioUrl);
-      if (audioRef.current) {
-        audioRef.current.src = data.audioUrl;
-        audioRef.current.play();
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsNarrationLoading(false);
+    if (isNarrating) {
+      window.speechSynthesis.cancel();
+      setIsNarrating(false);
+      return;
     }
+
+    const utterance = new SpeechSynthesisUtterance(finalStory);
+    utterance.onstart = () => setIsNarrating(true);
+    utterance.onend = () => setIsNarrating(false);
+    utterance.onerror = () => setIsNarrating(false);
+    window.speechSynthesis.speak(utterance);
   };
+
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis.cancel();
+    };
+  }, []);
 
   return (
     <div className="bg-white p-6 rounded-2xl shadow space-y-8">
@@ -112,15 +108,15 @@ export default function StoryStage() {
             <button
               className="flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 disabled:text-gray-400"
               onClick={handlePlayNarration}
-              disabled={!finalStory || isNarrationLoading}
+              disabled={!finalStory}
             >
-              {isNarrationLoading ? (
+              {isNarrating ? (
                 <>
-Loading Audio...
+Stop Narration
 </>
               ) : (
                 <><svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"></path></svg>
-Play Narration</>
+                Play Narration</>
               )}
             </button>
           </div>
@@ -138,7 +134,6 @@ Play Narration</>
       </div>
 
       <div className="mt-4 text-sm text-gray-500">Stage: {stage}</div>
-      <audio ref={audioRef} />
     </div>
   );
 }

@@ -1,5 +1,7 @@
-
 import { NextResponse } from 'next/server';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
 
 export async function POST(request: Request) {
   const { revisedStory } = await request.json();
@@ -8,8 +10,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Revised story is required' }, { status: 400 });
   }
 
-  // TODO: Call Gemini API to generate an image
-  const imageUrl = `https://picsum.photos/seed/${encodeURIComponent(revisedStory.slice(0,20))}/1024/768`;
+  try {
+    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    const generationPrompt = `Read the following story and produce a short image prompt for an illustration (1–2 sentences). Keep the prompt explicit about style: "children's book illustration, watercolor, warm tones".\n\nSTORY: "${revisedStory}"`;
+    
+    const result = await model.generateContent(generationPrompt);
+    const response = await result.response;
+    const imagePrompt = await response.text();
 
-  return NextResponse.json({ imageUrl });
+    const imageUrl = `https://source.unsplash.com/1024x768/?${encodeURIComponent(imagePrompt)}`;
+
+    return NextResponse.json({ imageUrl });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: 'Failed to generate image' }, { status: 500 });
+  }
 }
