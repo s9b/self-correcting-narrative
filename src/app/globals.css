@@ -3,61 +3,120 @@
 @tailwind utilities;
 
 :root {
-  --background-start-rgb: 10, 10, 10;
-  --background-end-rgb: 26, 26, 26;
-  --card-background: #1a1a1a;
-  --border-color: #2a2a2a;
-  --accent-blue: #0070f3;
-  --accent-green: #00a86b;
-  --accent-yellow: #f5a623;
-  --accent-indigo: #6366f1;
-  --font-inter: '__Inter_Fallback_0ec1f6', '__Inter_Fallback_Fallback_0ec1f6';
-  --font-playfair: '__Playfair_Display_Fallback_1a7b99', '__Playfair_Display_Fallback_Fallback_1a7b99';
+  --background-start-rgb: 18, 18, 23; /* Richer dark background */
+  --background-end-rgb: 34, 34, 40;   /* Slightly lighter for gradient */
+  --card-background: #2a2a30;         /* Darker, more distinct card background */
+  --border-color: #44444a;            /* Softer border */
+  --text-color-primary: #e0e0e0;      /* Soft white */
+  --text-color-secondary: #a0a0a0;    /* Light gray for secondary text */
+  --accent-blue: #6366f1;             /* Vibrant Indigo */
+  --accent-green: #10b981;            /* Vibrant Green */
+  --accent-yellow: #f59e0b;           /* Vibrant Yellow */
+  --accent-indigo: #6366f1;           /* Primary accent */
+  --font-inter: var(--font-inter);
+  --font-playfair: var(--font-playfair);
 }
 
 body {
-  color: rgb(222, 222, 222);
+  color: var(--text-color-primary);
   background: radial-gradient(circle at top, rgb(var(--background-end-rgb)), rgb(var(--background-start-rgb)));
   background-attachment: fixed;
   font-family: var(--font-inter);
+  line-height: 1.6;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-playfair);
+  color: var(--text-color-primary);
 }
 
-/* Add a subtle glow to the active agent card */
-.ring-2.ring-\[var\(--accent-indigo\)\] {
-  box-shadow: 0 0 15px 0 rgba(99, 102, 241, 0.5);
+/* General styling for containers */
+.container-base {
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* Polish the main button */
-.bg-\[var\(--accent-indigo\)\] {
-  background-image: linear-gradient(to right, #6366f1, #818cf8);
+/* Agent Card specific styling */
+.agent-card {
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease-in-out;
+}
+
+.agent-card.active {
+  border-color: var(--accent-indigo);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.6);
+  transform: translateY(-5px);
+}
+
+/* Input field styling */
+textarea {
+  background: #1a1a1f !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-color-primary) !important;
+  padding: 12px !important;
+  border-radius: 8px !important;
+  transition: border-color 0.3s ease;
+}
+
+textarea:focus {
+  border-color: var(--accent-indigo) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3) !important;
+}
+
+/* Button styling */
+.btn-primary {
+  background: linear-gradient(45deg, var(--accent-indigo), #818cf8);
+  color: white;
+  font-weight: 600;
+  padding: 12px 20px;
+  border-radius: 8px;
   transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
 }
 
-.bg-\[var\(--accent-indigo\)\]:hover {
+.btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px -10px rgba(99, 102, 241, 0.6);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
 }
 
-/* Style the prose */
-.prose-invert {
-    --tw-prose-body: #d1d5db;
-    --tw-prose-headings: #ffffff;
-    --tw-prose-lead: #e5e7eb;
-    --tw-prose-links: #818cf8;
-    --tw-prose-bold: #ffffff;
-    --tw-prose-counters: #9ca3af;
-    --tw-prose-bullets: #4f46e5;
-    --tw-prose-hr: #374151;
-    --tw-prose-quotes: #d1d5db;
-    --tw-prose-quote-borders: #4f46e5;
-    --tw-prose-captions: #9ca3af;
-    --tw-prose-code: #ffffff;
-    --tw-prose-pre-code: #d1d5db;
-    --tw-prose-pre-bg: #111827;
-    --tw-prose-th-borders: #374151;
-    --tw-prose-td-borders: #374151;
+.btn-primary:disabled {
+  background: #4a4a50;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
+
+/* Typewriter effect cursor */
+.Typewriter__cursor {
+  color: var(--accent-indigo);
+}
+
+/* Prose styling adjustments */
+.prose-invert {
+  --tw-prose-body: var(--text-color-primary);
+  --tw-prose-headings: var(--text-color-primary);
+  --tw-prose-lead: var(--text-color-secondary);
+  --tw-prose-links: var(--accent-blue);
+  --tw-prose-bold: var(--text-color-primary);
+  --tw-prose-counters: var(--text-color-secondary);
+  --tw-prose-bullets: var(--accent-indigo);
+  --tw-prose-hr: var(--border-color);
+  --tw-prose-quotes: var(--text-color-secondary);
+  --tw-prose-quote-borders: var(--accent-indigo);
+  --tw-prose-captions: var(--text-color-secondary);
+  --tw-prose-code: var(--text-color-primary);
+  --tw-prose-pre-code: var(--text-color-primary);
+  --tw-prose-pre-bg: #1a1a1f;
+  --tw-prose-th-borders: var(--border-color);
+  --tw-prose-td-borders: var(--border-color);
+}
+

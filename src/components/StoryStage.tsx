@@ -20,7 +20,7 @@ const AgentCard = ({ title, content, color, stage, currentStage }: AgentCardProp
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.5 }}
-      className={`bg-[var(--card-background)] border border-[var(--border-color)] rounded-lg p-6 ${isActive ? 'ring-2 ring-[var(--accent-indigo)]' : ''}`}>
+      className={`agent-card ${isActive ? 'active' : ''}`}>
       <div className="flex items-center justify-between mb-4">
         <h3 className={`text-lg font-semibold text-[${color}]`}>{title}</h3>
         {isActive && (
@@ -123,16 +123,16 @@ export default function StoryStage() {
 
   return (
     <div className="w-full max-w-5xl mx-auto p-4 md:p-8">
-      <div className="bg-[var(--card-background)] border border-[var(--border-color)] rounded-lg p-6 mb-8">
+      <div className="container-base mb-8">
         <textarea
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
-          className="w-full p-3 bg-transparent border border-[var(--border-color)] rounded mb-4 focus:ring-2 focus:ring-[var(--accent-indigo)] outline-none"
+          className="w-full mb-4 focus:ring-2 focus:ring-[var(--accent-indigo)] outline-none"
           rows={2}
         />
         <button
           onClick={runPipeline}
-          className="w-full px-4 py-3 bg-[var(--accent-indigo)] text-white font-semibold rounded hover:bg-indigo-700 transition-colors disabled:bg-gray-600"
+          className="w-full btn-primary"
           disabled={stage !== 'idle' && stage !== 'done' && stage !== 'error'}
         >
           {stage === 'idle' || stage === 'done' || stage === 'error' ? 'Create Story' : `Stage: ${stage}...`}
@@ -162,7 +162,7 @@ export default function StoryStage() {
       <AnimatePresence>
         {finalStory && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5, duration: 1 }}>
-            <div className="bg-[var(--card-background)] border border-[var(--border-color)] rounded-lg p-6">
+            <div className="container-base">
               <h2 className="text-2xl font-bold mb-4 text-center">The Polished Story</h2>
               <div className="flex items-center justify-between mb-4">
                 <p className="text-gray-400">The revised and improved draft.</p>
