@@ -1,6 +1,41 @@
-import Image from "next/image";
+'use client';
+
+import { useState } from 'react';
+import Typewriter from 'typewriter-effect';
 
 export default function Home() {
+  const [idea, setIdea] = useState('');
+  const [draft, setDraft] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleCreateStory = async () => {
+    if (!idea) return;
+    setLoading(true);
+    setDraft('');
+
+    try {
+      const response = await fetch('/api/storyteller', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ idea }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate story');
+      }
+
+      const data = await response.json();
+      setDraft(data.draft);
+    } catch (error) {
+      console.error(error);
+      // You might want to show an error message to the user
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="bg-gray-50 min-h-screen text-gray-900 font-sans">
       <header className="bg-white shadow-sm">
@@ -20,10 +55,17 @@ export default function Home() {
               className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
               rows={4}
               placeholder="A lonely robot discovers a hidden garden on a desolate planet..."
+              value={idea}
+              onChange={(e) => setIdea(e.target.value)}
+              disabled={loading}
             ></textarea>
             <div className="mt-4 flex justify-end">
-              <button className="bg-blue-600 text-white font-semibold px-6 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition">
-                Create Story
+              <button
+                className="bg-blue-600 text-white font-semibold px-6 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition disabled:bg-gray-400"
+                onClick={handleCreateStory}
+                disabled={loading || !idea}
+              >
+                {loading ? 'Creating...' : 'Create Story'}
               </button>
             </div>
           </div>
@@ -37,8 +79,19 @@ export default function Home() {
                   Storyteller
                 </span>
               </h3>
-              <div className="text-gray-600 italic h-32">
-                [The storyteller's first draft will appear here...]
+              <div className="text-gray-800 h-40 overflow-y-auto prose prose-sm">
+                {draft ? (
+                  <Typewriter
+                    options={{
+                      strings: draft,
+                      autoStart: true,
+                      delay: 20,
+                      cursor: '_',
+                    }}
+                  />
+                ) : (
+                  <p className="text-gray-500 italic">[The storyteller's first draft will appear here...]</p>
+                )}
               </div>
             </div>
 
