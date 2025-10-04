@@ -8,6 +8,7 @@ export default function Home() {
   const [draft, setDraft] = useState('');
   const [characterCritique, setCharacterCritique] = useState('');
   const [worldCritique, setWorldCritique] = useState('');
+  const [revisedStory, setRevisedStory] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleCreateStory = async () => {
@@ -16,6 +17,7 @@ export default function Home() {
     setDraft('');
     setCharacterCritique('');
     setWorldCritique('');
+    setRevisedStory('');
 
     try {
       // 1. Generate draft
@@ -50,6 +52,21 @@ export default function Home() {
 
       setCharacterCritique(charData.critique);
       setWorldCritique(worldData.critique);
+
+      // 3. Get revised story
+      const reviserResponse = await fetch('/api/reviser', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          draft: storyData.draft,
+          characterCritique: charData.critique,
+          worldCritique: worldData.critique,
+        }),
+      });
+
+      if (!reviserResponse.ok) throw new Error('Failed to revise story');
+      const reviserData = await reviserResponse.json();
+      setRevisedStory(reviserData.revisedStory);
 
     } catch (error) {
       console.error(error);
@@ -175,8 +192,20 @@ export default function Home() {
                   Play Narration
                 </button>
               </div>
-              <div className="text-gray-600 italic h-48">
-                [The final, polished story will appear here, with a typewriter effect...]
+              <div className="text-gray-800 h-48 overflow-y-auto prose prose-lg">
+                {revisedStory ? (
+                    <Typewriter
+                    options={{
+                      strings: revisedStory,
+                      autoStart: true,
+                      delay: 20,
+                      cursor: '_',
+                    }}
+                  />
+                  ) : (
+                    <p className="text-gray-500 italic">[The final, polished story will appear here, with a typewriter effect...]</p>
+                  )
+                }
               </div>
               <div className="mt-4 h-56 bg-gray-200 rounded-md flex items-center justify-center">
                 <p className="text-gray-500 italic">[AI-generated illustration will appear here]</p>
