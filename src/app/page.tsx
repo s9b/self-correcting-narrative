@@ -1,10 +1,13 @@
+
 import StoryStage from '@/components/StoryStage';
 
 export default function Home() {
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
-      <div className="w-full max-w-3xl">
-        <h1 className="text-3xl font-semibold mb-4 text-center">Writer's Room — Self-Correcting Narrative</h1>
+    <main className="min-h-screen flex items-center justify-center">
+      <div className="w-full max-w-5xl">
+        <h1 className="text-4xl font-bold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-500">
+          Writer's Room
+        </h1>
         <StoryStage />
       </div>
     </main>
