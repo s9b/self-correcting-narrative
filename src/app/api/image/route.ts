@@ -42,6 +42,7 @@ export async function POST(request: Request) {
     const imagePrompt = data.candidates[0].content.parts[0].text;
 
     const imageUrl = `https://source.unsplash.com/1024x768/?${encodeURIComponent(imagePrompt)}`;
+    console.log('Generated Image URL:', imageUrl);
 
     return NextResponse.json({ imageUrl });
   } catch (error) {
