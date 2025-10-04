@@ -12,7 +12,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    // @ts-ignore
+    // @ts-expect-error
     const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
     const generationPrompt = `Read the following story and produce a short image prompt for an illustration (1–2 sentences). Keep the prompt explicit about style: "children's book illustration, watercolor, warm tones".\n\nSTORY: "${revisedStory}"`;
     
