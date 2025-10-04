@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Typewriter from 'typewriter-effect';
 
 export default function Home() {
@@ -9,7 +9,11 @@ export default function Home() {
   const [characterCritique, setCharacterCritique] = useState('');
   const [worldCritique, setWorldCritique] = useState('');
   const [revisedStory, setRevisedStory] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isNarrationLoading, setIsNarrationLoading] = useState(false);
+  const [audioUrl, setAudioUrl] = useState('');
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   const handleCreateStory = async () => {
     if (!idea) return;
@@ -18,6 +22,8 @@ export default function Home() {
     setCharacterCritique('');
     setWorldCritique('');
     setRevisedStory('');
+    setImageUrl('');
+    setAudioUrl('');
 
     try {
       // 1. Generate draft
@@ -68,11 +74,47 @@ export default function Home() {
       const reviserData = await reviserResponse.json();
       setRevisedStory(reviserData.revisedStory);
 
+      // 4. Get image
+      const imageResponse = await fetch('/api/image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ revisedStory: reviserData.revisedStory }),
+      });
+
+      if (!imageResponse.ok) throw new Error('Failed to generate image');
+      const imageData = await imageResponse.json();
+      setImageUrl(imageData.imageUrl);
+
     } catch (error) {
       console.error(error);
       // You might want to show an error message to the user
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePlayNarration = async () => {
+    if (!revisedStory) return;
+    setIsNarrationLoading(true);
+
+    try {
+      const response = await fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ revisedStory }),
+      });
+
+      if (!response.ok) throw new Error('Failed to generate narration');
+      const data = await response.json();
+      setAudioUrl(data.audioUrl);
+      if (audioRef.current) {
+        audioRef.current.src = data.audioUrl;
+        audioRef.current.play();
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsNarrationLoading(false);
     }
   };
 
@@ -187,9 +229,17 @@ export default function Home() {
               <h2 className="text-xl font-semibold mb-4">2. Polished Story</h2>
               <div className="flex items-center justify-between mb-4">
                 <p className="text-gray-500">The storyteller's revised and improved draft.</p>
-                <button className="flex items-center text-sm font-medium text-blue-600 hover:text-blue-800">
-                  <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"></path></svg>
-                  Play Narration
+                <button
+                  className="flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 disabled:text-gray-400"
+                  onClick={handlePlayNarration}
+                  disabled={!revisedStory || isNarrationLoading}
+                >
+                  {isNarrationLoading ? (
+                    <>Loading Audio...</>
+                  ) : (
+                    <><svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"></path></svg>
+                    Play Narration</>
+                  )}
                 </button>
               </div>
               <div className="text-gray-800 h-48 overflow-y-auto prose prose-lg">
@@ -208,10 +258,15 @@ export default function Home() {
                 }
               </div>
               <div className="mt-4 h-56 bg-gray-200 rounded-md flex items-center justify-center">
-                <p className="text-gray-500 italic">[AI-generated illustration will appear here]</p>
+                {imageUrl ? (
+                  <img src={imageUrl} alt="AI-generated illustration" className="w-full h-full object-cover rounded-md" />
+                ) : (
+                  <p className="text-gray-500 italic">[AI-generated illustration will appear here]</p>
+                )}
               </div>
             </div>
         </div>
+        <audio ref={audioRef} />
       </main>
     </div>
   );
