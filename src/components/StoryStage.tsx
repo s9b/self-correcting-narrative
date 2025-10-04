@@ -92,7 +92,11 @@ export default function StoryStage() {
       setStage('done');
     } catch (err) {
       console.error(err);
-      setError(err.message);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unknown error occurred.');
+      }
       setStage('error');
     }
   }
