@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Self-Correcting Narrative Engine (Writer's Room)
+
+Turn a short user prompt into a staged, improved story by simulating a writer's room: Draft → Critique (2 agents) → Revised Draft → Illustration + Voiceover.
+
+This project was built in 24 hours for the [ACTA Global Hackathon](https://www.acta.so/hackathon).
+
+**Live Demo:** [Link to your Vercel deployment]
+
+**Demo Video:** [Link to your 60s Loom/YouTube video]
+
+---
+
+## Features
+
+*   **Iterative Story Generation:** Watch a story evolve from a simple idea to a polished narrative.
+*   **AI Agent Collaboration:** A team of AI agents (Storyteller, Character Coach, World Builder) work together to improve the story.
+*   **AI-Generated Illustration:** Each story is accompanied by a unique, AI-generated image.
+*   **Text-to-Speech Narration:** Listen to the final story with a "Play Narration" button.
+*   **Polished UI:** A clean, dark-mode interface with smooth animations to visualize the creative process.
+
+## Tech Stack
+
+*   **Frontend:** Next.js (App Router), React, Tailwind CSS, Framer Motion
+*   **Backend:** Next.js API Routes
+*   **AI:** Google Gemini API
+*   **Deployment:** Vercel
 
 ## Getting Started
 
-First, run the development server:
+To run the project locally, follow these steps:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/s9b/self-correcting-narrative.git
+    cd self-correcting-narrative
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+3.  **Set up environment variables:**
+    Create a `.env.local` file in the root of the project and add your Gemini API key:
+    ```
+    GEMINI_API_KEY=your_api_key_here
+    ```
+
+4.  **Run the development server:**
+    ```bash
+    npm run dev
+    ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Hackathon Compliance
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project adheres to the hackathon rules. The initial commit includes a `.hackathon-start` file with a timestamp to verify that the project was created within the 24-hour timeframe.
