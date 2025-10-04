@@ -1,5 +1,6 @@
+
 import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenerativeAI } from '@google/genai';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
 
@@ -11,7 +12,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
     const generationPrompt = `Read the following story and produce a short image prompt for an illustration (1–2 sentences). Keep the prompt explicit about style: "children's book illustration, watercolor, warm tones".\n\nSTORY: "${revisedStory}"`;
     
     const result = await model.generateContent(generationPrompt);
@@ -26,3 +27,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Failed to generate image' }, { status: 500 });
   }
 }
+
