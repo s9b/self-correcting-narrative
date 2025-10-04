@@ -12,7 +12,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = (genAI as any).getGenerativeModel({ model: 'gemini-1.5-flash' });
     const generationPrompt = `You are The Storyteller. Given this prompt: "${prompt}", produce a bland short draft of ~120 words for a kid-friendly story. Keep it simple and intentionally unpolished. Output only the story text.`;
     const result = await model.generateContent(generationPrompt);
     const response = await result.response;
