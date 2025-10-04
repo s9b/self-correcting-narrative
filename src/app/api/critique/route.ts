@@ -14,7 +14,7 @@ const generationConfig: GenerationConfig = {
 };
 
 async function getCritique(storyText: string, coachType: 'Character' | 'World'): Promise<CritiqueResponse> {
-  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash', generationConfig });
+  const model = (genAI as any).getGenerativeModel({ model: 'gemini-1.5-flash', generationConfig });
   const prompt = coachType === 'Character'
     ? `You are The Character Coach. Read the following story text. Provide 3 short bullet points focused on improving the character: their quirks, emotional stakes, and clear motivation. Output a JSON object with a single key "critA" containing a single string with the bullet points separated by semicolons. STORY_TEXT: "${storyText}"`
     : `You are The World Builder. Read the following story text. Provide 3 short bullet points about improving the setting: sensory details, unusual props, or a unique description of the location. Output a JSON object with a single key "critB" containing a single string with the bullet points separated by semicolons. STORY_TEXT: "${storyText}"`;
