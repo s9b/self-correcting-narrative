@@ -6,28 +6,51 @@ import Typewriter from 'typewriter-effect';
 export default function Home() {
   const [idea, setIdea] = useState('');
   const [draft, setDraft] = useState('');
+  const [characterCritique, setCharacterCritique] = useState('');
+  const [worldCritique, setWorldCritique] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleCreateStory = async () => {
     if (!idea) return;
     setLoading(true);
     setDraft('');
+    setCharacterCritique('');
+    setWorldCritique('');
 
     try {
-      const response = await fetch('/api/storyteller', {
+      // 1. Generate draft
+      const storyResponse = await fetch('/api/storyteller', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ idea }),
       });
+      if (!storyResponse.ok) throw new Error('Failed to generate story');
+      const storyData = await storyResponse.json();
+      setDraft(storyData.draft);
 
-      if (!response.ok) {
-        throw new Error('Failed to generate story');
-      }
+      // 2. Get critiques in parallel
+      const [charResponse, worldResponse] = await Promise.all([
+        fetch('/api/character-coach', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ draft: storyData.draft }),
+        }),
+        fetch('/api/world-builder', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ draft: storyData.draft }),
+        }),
+      ]);
 
-      const data = await response.json();
-      setDraft(data.draft);
+      if (!charResponse.ok) throw new Error('Failed to get character critique');
+      if (!worldResponse.ok) throw new Error('Failed to get world critique');
+
+      const charData = await charResponse.json();
+      const worldData = await worldResponse.json();
+
+      setCharacterCritique(charData.critique);
+      setWorldCritique(worldData.critique);
+
     } catch (error) {
       console.error(error);
       // You might want to show an error message to the user
@@ -102,8 +125,19 @@ export default function Home() {
                   Character Coach
                 </span>
               </h3>
-              <div className="text-gray-600 italic h-32">
-                [The character coach's feedback will appear here...]
+              <div className="text-gray-800 h-40 overflow-y-auto prose prose-sm">
+                {characterCritique ? (
+                   <Typewriter
+                   options={{
+                     strings: characterCritique,
+                     autoStart: true,
+                     delay: 20,
+                     cursor: '_',
+                   }}
+                 />
+                ) : (
+                  <p className="text-gray-500 italic">[The character coach's feedback will appear here...]</p>
+                )}
               </div>
             </div>
 
@@ -114,8 +148,19 @@ export default function Home() {
                   World Builder
                 </span>
               </h3>
-              <div className="text-gray-600 italic h-32">
-                [The world builder's feedback will appear here...]
+              <div className="text-gray-800 h-40 overflow-y-auto prose prose-sm">
+                {worldCritique ? (
+                   <Typewriter
+                   options={{
+                     strings: worldCritique,
+                     autoStart: true,
+                     delay: 20,
+                     cursor: '_',
+                   }}
+                 />
+                ) : (
+                  <p className="text-gray-500 italic">[The world builder's feedback will appear here...]</p>
+                )}
               </div>
             </div>
           </div>
