@@ -4,7 +4,7 @@ Turn a short user prompt into a staged, improved story by simulating a writer's 
 
 This project was built in 24 hours for the [ACTA Global Hackathon](https://www.acta.so/hackathon).
 
-**Live Demo:** [Link to your Vercel deployment]
+**Live Demo: (https://self-correcting-narrative.vercel.app)
 
 **Demo Video:** [Link to your 60s Loom/YouTube video]
 
